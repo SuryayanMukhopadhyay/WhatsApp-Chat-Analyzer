@@ -54,3 +54,25 @@ def create_wordcloud(selected_user, df):
 
     return df_wc
 
+
+
+def most_common_words(selected_user, df):
+    f = open('stop_hinglish.txt', 'r')
+    stop_words = f.read()
+
+    if selected_user != 'Overall':
+        df = df[df['user'] == selected_user] #slicing
+
+    temp = df[df['user'] != 'group_notification'] #slicing
+    temp = temp[temp['message'] != '<Media omitted>\n']
+
+    words = []
+
+    for message in temp['message']:
+        for word in message.lower().split():
+            if word not in stop_words:
+                words.append(word)
+
+    most_common_df = pd.DataFrame(Counter(words).most_common(20))
+    return most_common_df
+
